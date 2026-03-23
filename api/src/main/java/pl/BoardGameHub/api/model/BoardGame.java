@@ -22,6 +22,8 @@ public class BoardGame {
     private double rentalPrice;
     private int totalCopies;
 
+    private String imageUrl;
+
     // Atrybut pochodny
     public boolean isAvailable() {
         return totalCopies > 0;
