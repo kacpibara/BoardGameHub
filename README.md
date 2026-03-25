@@ -1,6 +1,11 @@
 <div align="center">
 
-<br><br>
+<Br><Br>
+<a href="TUTAJ_WKLEJ_SWOJ_NOWY_LINK_Z_VERCELA" target="_blank">
+    <img src="https://img.shields.io/badge/🔴_LIVE_DEMO-Kliknij_aby_przetestować-FF0000?style=for-the-badge" alt="Live Demo" />
+  </a>
+
+
 
 <a href="#english">🇬🇧 English</a> | <a href="#polski">🇵🇱 Polski</a>
 
@@ -13,9 +18,17 @@
 </div>
 
 ---
+**Important information about the Live version:** The app's backend is hosted on a free Render.com server. If the app hasn't been used for the last 15 minutes, the server goes to sleep. **Your first login or game download may take 1 to 2 minutes** to wake up the Java virtual machine. Please be patient!
+
+**Test Account (Admin):**
+> * **Email:** `test@test.pl`
+> * **Password:** `test`
+
+---
 
 <h1 id="english">BoardGameHub - Board Game Cafe & Rental SaaS</h1>
 
+---
 > A comprehensive system for managing a board game rental and cafe. The application combines an e-commerce experience for customers with an advanced administrative panel for the staff.
 
 ## Key Features
@@ -72,6 +85,13 @@ The frontend will start at http://localhost:5173.
 
 > Kompleksowy system do zarządzania wypożyczalnią i kawiarnią z grami planszowymi. Aplikacja łączy w sobie e-commerce dla klientów z zaawansowanym panelem administracyjnym dla obsługi lokalu.
 
+**Ważna informacja o wersji Live:** Backend aplikacji jest hostowany na darmowym serwerze Render.com. Jeśli aplikacja nie była używana przez ostatnie 15 minut, serwer zasypia. **Pierwsze logowanie lub pobranie gier może potrwać od 1 do 2 minut** w celu wybudzenia maszyny wirtualnej Javy. Proszę o cierpliwość!
+
+**Konto testowe (Admin):**
+> * **Email:** `test@test.pl`
+> * **Hasło:** `test1234`
+
+
 ## Główne funkcjonalności
 ### Dla Klienta:
 * **Katalog Gier:** Przeglądanie dostępnych gier z wyszukiwarką, filtrowaniem po kategoriach i paginacją.
@@ -102,14 +122,14 @@ The frontend will start at http://localhost:5173.
 * Chart.js (Wykresy)
 
 ## Uruchomienie lokalne
-### 1. Baza Danych (PostgreSQL)
+###  Baza Danych (PostgreSQL)
 Upewnij się, że masz uruchomiony serwer PostgreSQL na porcie 5433. Aplikacja łączy się z bazą danych o nazwie postgres (użytkownik: postgres, hasło: admin). Możesz to zmienić w pliku:
 api/src/main/resources/application.properties
 
-### 2. Backend (Spring Boot)
+###  Backend (Spring Boot)
 Otwórz folder api w swoim IDE i uruchom klasę ApiApplication.java. Aplikacja uruchomi się na porcie 8080.
 
-### 3. Frontend (Vue 3)
+###  Frontend (Vue 3)
 W terminalu przejdź do folderu frontend i wykonaj:
 
 ```Bash
