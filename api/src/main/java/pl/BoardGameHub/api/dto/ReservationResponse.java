@@ -8,6 +8,6 @@ public record ReservationResponse(
         LocalDateTime endTime,
         String status,
         long durationInHours,
-        String clientFullName, // Złączymy Imię i Nazwisko!
+        String clientFullName,
         int tableNumber
 ) {}

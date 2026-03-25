@@ -6,7 +6,6 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    // Spring Data JPA sam napisze zapytanie SQL na podstawie nazwy tej metody!
     Optional<Client> findByEmail(String email);
 
 }

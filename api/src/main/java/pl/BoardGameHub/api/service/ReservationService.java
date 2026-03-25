@@ -21,7 +21,6 @@ public class ReservationService {
 
     public ReservationResponse createReservation(ReservationRequest request) {
 
-        // 1. Wyciągamy obiekty z bazy na podstawie przesłanych ID
         CafeTable table = cafeTableRepository.findById(request.cafeTableId())
                 .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono stolika!"));
 
@@ -30,7 +29,6 @@ public class ReservationService {
 
         List<BoardGame> games = boardGameRepository.findAllById(request.gameIds());
 
-        // 2. Walidacja czasowa (tak jak mieliśmy)
         boolean isBooked = reservationRepository.isTableAlreadyBooked(
                 table.getId(), request.startTime(), request.endTime()
         );
@@ -38,19 +36,16 @@ public class ReservationService {
             throw new IllegalStateException("Stolik jest zajęty w tym terminie.");
         }
 
-        // 3. Budujemy prawdziwą Encję do zapisu w bazie
         Reservation reservation = new Reservation();
         reservation.setStartTime(request.startTime());
         reservation.setEndTime(request.endTime());
-        reservation.setStatus(ReservationStatus.PENDING); // Domyślny status
+        reservation.setStatus(ReservationStatus.PENDING);
         reservation.setCafeTable(table);
         reservation.setClient(client);
         reservation.setRequestedGames(games);
 
-        // 4. Zapisujemy w bazie
         Reservation saved = reservationRepository.save(reservation);
 
-        // 5. Zmieniamy zapisaną encję na ładny Response DTO
         return new ReservationResponse(
                 saved.getId(),
                 saved.getStartTime(),

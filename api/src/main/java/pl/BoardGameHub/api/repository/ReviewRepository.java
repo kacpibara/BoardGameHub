@@ -3,5 +3,8 @@ package pl.BoardGameHub.api.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.BoardGameHub.api.model.Review;
 
+import java.util.List;
+
 public interface ReviewRepository extends JpaRepository<Review, Long> {
+    List<Review> findByBoardGameId(Long gameId);
 }

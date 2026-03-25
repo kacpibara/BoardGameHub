@@ -16,6 +16,7 @@ import pl.BoardGameHub.api.repository.CafeTableRepository;
 import pl.BoardGameHub.api.repository.ClientRepository;
 import pl.BoardGameHub.api.repository.CafeTableReservationRepository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -30,12 +31,10 @@ public class CafeTableReservationService {
 
     @Transactional
     public String createReservation(CafeTableReservationRequest request) {
-        // 1. Pobierz zalogowanego klienta
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Client client = clientRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Klient nie znaleziony"));
 
-        // 2. Pobierz stolik
         CafeTable table = cafeTableRepository.findById(request.tableId())
                 .orElseThrow(() -> new EntityNotFoundException("Stolik nie znaleziony"));
 
@@ -49,14 +48,12 @@ public class CafeTableReservationService {
             LocalTime existingStart = res.getStartTime();
             LocalTime existingEnd = existingStart.plusHours(res.getDurationHours());
 
-            // Sprawdzamy, czy przedziały czasowe na siebie nachodzą
             if (newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart)) {
                 throw new IllegalStateException("Niestety, ten stolik jest już zajęty w godzinach od "
                         + existingStart + " do " + existingEnd + ".");
             }
         }
 
-        // 3. Tworzymy rezerwację
         CafeTableReservation reservation = new CafeTableReservation();
         reservation.setClient(client);
         reservation.setCafeTable(table);
@@ -65,7 +62,6 @@ public class CafeTableReservationService {
         reservation.setDurationHours(request.durationHours());
         reservation.setStatus("ACTIVE");
 
-        // 4. Jeśli podano grę (Extended Version!)
         if (request.optionalGameId() != null) {
             BoardGame game = boardGameRepository.findById(request.optionalGameId())
                     .orElseThrow(() -> new EntityNotFoundException("Gra nie znaleziona"));
@@ -74,7 +70,6 @@ public class CafeTableReservationService {
                 throw new IllegalStateException("Niestety, ta gra nie jest w tym momencie dostępna.");
             }
 
-            // Odkładamy grę dla klienta
             game.setTotalCopies(game.getTotalCopies() - 1);
             boardGameRepository.save(game);
             reservation.setBoardGame(game);
@@ -86,4 +81,62 @@ public class CafeTableReservationService {
                 ? "Zarezerwowano stolik nr " + table.getTableNumber() + " wraz z grą " + reservation.getBoardGame().getTitle() + "!"
                 : "Zarezerwowano sam stolik nr " + table.getTableNumber() + "!";
     }
+
+    public List<CafeTableReservation> getMyReservations() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return reservationRepository.findByClientEmailOrderByReservationDateDesc(email);
+    }
+
+    @Transactional
+    public String cancelReservation(Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        CafeTableReservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono rezerwacji"));
+
+        if (!reservation.getClient().getEmail().equals(email)) {
+            throw new IllegalStateException("Nie możesz anulować cudzej rezerwacji!");
+        }
+
+        if (!reservation.getStatus().equals("ACTIVE")) {
+            throw new IllegalStateException("Rezerwacja nie jest aktywna.");
+        }
+
+        reservation.setStatus("CANCELLED");
+
+        if (reservation.getBoardGame() != null) {
+            BoardGame game = reservation.getBoardGame();
+            game.setTotalCopies(game.getTotalCopies() + 1);
+            boardGameRepository.save(game);
+        }
+
+        reservationRepository.save(reservation);
+        return "Rezerwacja stolika została pomyślnie anulowana.";
+    }
+
+    public List<CafeTableReservation> getAllReservations() {
+        return reservationRepository.findAll();
+    }
+
+    @Transactional
+    public String updateReservationStatus(Long id, String newStatus) {
+        CafeTableReservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono rezerwacji"));
+
+        if (!reservation.getStatus().equals("ACTIVE")) {
+            throw new IllegalStateException("Można edytować tylko aktywne rezerwacje.");
+        }
+
+        reservation.setStatus(newStatus);
+
+        if (reservation.getBoardGame() != null) {
+            BoardGame game = reservation.getBoardGame();
+            game.setTotalCopies(game.getTotalCopies() + 1);
+            boardGameRepository.save(game);
+        }
+
+        reservationRepository.save(reservation);
+        return "Status rezerwacji zaktualizowany na: " + newStatus;
+    }
+
+
 }

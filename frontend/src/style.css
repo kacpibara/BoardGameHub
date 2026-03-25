@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* To zostaw, żebyśmy widzieli czy body zmienia kolor */
 body {
   @apply bg-gray-100;
 }

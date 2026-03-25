@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import api from '../api/axios';
 import { useAuthStore } from '../stores/authStore';
 import { useRouter } from 'vue-router';
+import Navbar from '../components/Navbar.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -10,7 +11,6 @@ const router = useRouter();
 const userPoints = ref(0);
 const games = ref<any[]>([]);
 
-// Pola formularza
 const form = ref({
   tableId: 1,
   reservationDate: '',
@@ -22,10 +22,14 @@ const form = ref({
 const fetchData = async () => {
   try {
     const userRes = await api.get('/clients/me');
-    userPoints.value = userRes.data.LoyaltyPoints || 0; // Poprawka nazwy!
+    userPoints.value = userRes.data.LoyaltyPoints || 0;
 
     const gamesRes = await api.get('/games');
-    games.value = gamesRes.data.filter((g: any) => g.totalCopies > 0);
+    
+    games.value = gamesRes.data
+      .map((item: any) => item.game)
+      .filter((g: any) => g.totalCopies > 0);
+
   } catch (error) {
     console.error("Błąd pobierania danych:", error);
   }
@@ -46,7 +50,6 @@ const submitReservation = async () => {
       optionalGameId: form.value.optionalGameId ? Number(form.value.optionalGameId) : null
     };
 
-    // Zmieniona ścieżka, skoro mówiłeś, że klasy na backu to CafeTableReservation
     const response = await api.post('/table-reservations', payload); 
     alert("Sukces! " + response.data);
     router.push('/my-rentals');
@@ -60,31 +63,7 @@ onMounted(fetchData);
 
 <template>
 <div class="min-h-screen bg-gray-50 pb-20">
-    <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center border-b border-gray-200">
-      <div class="flex items-center gap-6">
-        <h1 class="text-2xl font-black text-emerald-600 tracking-tight cursor-pointer" @click="$router.push('/')">BoardGameHub</h1>
-        <div class="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm min-w-[90px] justify-center">
-          <span class="text-lg leading-none">⭐</span>
-          <span class="text-emerald-700 font-extrabold text-sm whitespace-nowrap">{{ userPoints }} pkt</span>
-        </div>
-      </div>
-              <div class="hidden md:flex gap-4">
-        <router-link to="/" class="text-gray-600 hover:text-emerald-600 font-medium transition">Katalog Gier</router-link>
-          <router-link to="/my-rentals" class="text-gray-600 hover:text-emerald-600 font-medium transition">Moje Wypożyczenia</router-link>
-          <router-link to="/reserve" class="text-emerald-600 font-bold">Zarezerwuj Stolik</router-link>
-        
- <router-link 
-  v-if="userRole === 'ADMIN'" 
-  to="/admin" 
-  class="bg-gray-900 text-white px-4 py-1.5 rounded-lg font-bold hover:bg-gray-800 transition shadow-sm">
-  Panel Admina ⚙️
-</router-link>
-</div>
-      <div class="flex items-center gap-6">
-
-        <button @click="authStore.logout()" class="text-gray-500 hover:text-red-600 font-medium transition">Wyloguj się</button>
-      </div>
-    </nav>
+    <Navbar></Navbar>
 
     <main class="max-w-3xl mx-auto p-8 mt-10">
       <header class="mb-10 text-center">

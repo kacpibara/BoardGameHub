@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Na razie importujemy "na sucho", zaraz stworzymy te pliki!
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -33,22 +32,36 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: () => import('../views/AdminView.vue')
+    },
+    {
+      path: '/employee',
+      name: 'employee',
+      component: () => import('../views/EmployeeView.vue')
+    },
+    {
+      path: '/my-reservations',
+      name: 'my-reservations',
+      component: () => import('../views/MyReservationsView.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
     }
-  
   ]
 })
 
-router.beforeEach((to, from) => { // usuwamy trzeci argument 'next'
+router.beforeEach((to, from) => {
   const publicPages = ['/login', '/register'];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem('token');
 
   if (authRequired && !loggedIn) {
-    return '/login'; // zwracamy ścieżkę zamiast next('/login')
+    return '/login';
   }
 
   if (loggedIn && publicPages.includes(to.path)) {
-    return '/'; // zwracamy ścieżkę zamiast next('/')
+    return '/';
   }
 });
 

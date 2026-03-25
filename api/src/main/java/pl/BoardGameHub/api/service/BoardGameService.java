@@ -21,7 +21,6 @@ public class BoardGameService {
         if (players != null) {
             return boardGameRepository.findByPlayerCount(players);
         }
-        // Jeśli klient nie podał filtrów, zwracamy wszystko
         return boardGameRepository.findAll();
     }
 

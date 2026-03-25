@@ -25,12 +25,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. WŁĄCZAMY OBSŁUGĘ CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/rentals/all", "/api/rentals/*/return").hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
+                        .requestMatchers("/api/table-reservations/all", "/api/table-reservations/*/status").hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/reviews/game/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/games").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -41,17 +44,12 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 2. DEFINIUJEMY ZASADY CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Pozwalamy na Twój port z Vue
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        // Pozwalamy na wszystkie metody
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        // Pozwalamy na wszystkie nagłówki (ważne dla Authorization!)
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        // Pozwalamy na przesyłanie poświadczeń
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

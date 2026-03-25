@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
-    // Zwraca TRUE, jeśli istnieje jakakolwiek nieanulowana rezerwacja dla danego stolika, która nakłada się czasowo
     @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.cafeTable.id = :tableId " +
             "AND r.status != 'CANCELLED' " +
             "AND (r.startTime < :endTime AND r.endTime > :startTime)")

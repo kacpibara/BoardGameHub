@@ -20,14 +20,13 @@ public class CafeTableReservation {
     @JoinColumn(name = "cafe_table_id")
     private CafeTable cafeTable;
 
-    // Opcjonalna gra, która będzie czekać na stoliku!
     @ManyToOne
     @JoinColumn(name = "game_id")
     private BoardGame boardGame;
 
     private LocalDate reservationDate;
     private LocalTime startTime;
-    private int durationHours; // na ile godzin
+    private int durationHours;
 
-    private String status; // np. "ACTIVE", "CANCELLED"
+    private String status;
 }

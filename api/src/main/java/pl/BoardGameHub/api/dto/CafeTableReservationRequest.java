@@ -8,5 +8,5 @@ public record CafeTableReservationRequest(
         LocalDate reservationDate,
         LocalTime startTime,
         int durationHours,
-        Long optionalGameId // Może być null, jeśli klient chce tylko stolik
+        Long optionalGameId
 ) {}

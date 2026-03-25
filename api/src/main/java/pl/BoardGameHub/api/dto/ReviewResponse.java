@@ -7,5 +7,6 @@ public record ReviewResponse(
         int stars,
         String comment,
         LocalDate reviewDate,
-        String gameTitle
+        String gameTitle,
+        String authorName
 ) {}

@@ -1,7 +1,9 @@
 package pl.BoardGameHub.api.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +12,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users") // "user" - słowo zastrzeżone w wielu bazach
-@Inheritance(strategy = InheritanceType.JOINED) // Tworzy osobne tabele połączone kluczem
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +24,21 @@ public abstract class User implements UserDetails {
 
     private String firstName;
     private String lastName;
-    @Column(unique = true) // Email musi być unikalny do logowania!
+    @Column(unique = true)
     private String email;
 
-    @ElementCollection // Atrybut powtarzalny
+    @ElementCollection
+    @CollectionTable(name = "user_phone_numbers", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "phone_number")
     private List<String> phoneNumbers;
 
-    private String password; // NOWE POLE
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // NOWE POLE
-
-    // --- METODY WYMAGANE PRZEZ INTERFEJS UserDetails ---
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Tłumaczymy naszą Rolę na format zrozumiały dla Spring Security
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
@@ -46,7 +49,7 @@ public abstract class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // W naszym systemie loginem jest EMAIL
+        return email;
     }
 
     @Override

@@ -8,5 +8,5 @@ public record ReservationRequest(
         LocalDateTime endTime,
         Long clientId,
         Long cafeTableId,
-        List<Long> gameIds // Lista ID gier, w które chcą zagrać
+        List<Long> gameIds
 ) {}

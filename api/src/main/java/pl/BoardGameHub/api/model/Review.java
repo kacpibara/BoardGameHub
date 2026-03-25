@@ -11,9 +11,14 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int stars;
+    private int stars; // 1 do 5
+    @Column(length = 1000)
     private String comment;
     private LocalDate reviewDate;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     @ManyToOne
     @JoinColumn(name = "game_id")

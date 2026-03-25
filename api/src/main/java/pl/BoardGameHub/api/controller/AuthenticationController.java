@@ -12,7 +12,7 @@ import pl.BoardGameHub.api.dto.auth.RegisterRequest;
 import pl.BoardGameHub.api.service.AuthenticationService;
 
 @RestController
-@RequestMapping("/api/auth") // Zauważ, że te ścieżki odblokowaliśmy w SecurityConfig!
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

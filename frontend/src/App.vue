@@ -3,5 +3,4 @@
 </template>
 
 <script setup lang="ts">
-// Nic tu nie musimy dodawać
 </script>

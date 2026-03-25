@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import api from '../api/axios'; // Nasz kurier z tokenem
+import api from '../api/axios';
 
 const router = useRouter();
 const firstName = ref('');
@@ -16,7 +16,6 @@ const handleRegister = async () => {
   successMsg.value = '';
   
   try {
-    // Wysyłamy dane do Springa na endpoint, który odblokowaliśmy w SecurityConfig
     await api.post('/auth/register', {
       firstName: firstName.value,
       lastName: lastName.value,
@@ -26,13 +25,11 @@ const handleRegister = async () => {
     
     successMsg.value = 'Konto utworzone pomyślnie! Zaraz zostaniesz przekierowany...';
     
-    // Czekamy 2 sekundy, żeby użytkownik przeczytał sukces i hop na logowanie
     setTimeout(() => {
       router.push('/login');
     }, 2000);
     
   } catch (err: any) {
-    // Jeśli np. email już istnieje w bazie, Spring rzuci błędem
     errorMsg.value = 'Błąd rejestracji. Sprawdź dane lub spróbuj inny email.';
     console.error(err);
   }

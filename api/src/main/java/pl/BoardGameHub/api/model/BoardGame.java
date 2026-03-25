@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Entity
-@Data // Lombok - generuje gettery/settery w locie
-@NoArgsConstructor // Pusty konstruktor dla bazy
-@AllArgsConstructor // Konstruktor ze wszystkimi polami
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardGame {
 
     @Id
@@ -24,7 +24,6 @@ public class BoardGame {
 
     private String imageUrl;
 
-    // Atrybut pochodny
     public boolean isAvailable() {
         return totalCopies > 0;
     }
